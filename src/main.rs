@@ -20,5 +20,29 @@ impl Runtime {
 
 
 fn main() {
-    println!("Hello, world!");
+    let mut runtime = Runtime::new();
+
+    //Genesis state
+    let rajkumar = "rajkumar".to_string();
+    let dayitva = "dayitva".to_string();
+    let aditya = "aditya".to_string();
+
+    // Set initial balances
+    runtime.balances.set_balance(&rajkumar, 100);
+
+    runtime.system.inc_block_number();
+
+    assert_eq!(runtime.system.block_number(), 1);
+
+    runtime.system.inc_nonce(&rajkumar);
+
+    //First transaction
+    let _ = runtime.balances.transfer(rajkumar.clone(), dayitva.clone(), 50)
+    .map_err(|e| println!("Error: {:?}", e));
+
+    runtime.system.inc_nonce( &rajkumar);
+
+    // Second transaction
+    let _ = runtime.balances.transfer(dayitva.clone(), aditya.clone(), 30)
+    .map_err(|e| println!("Error: {:?}", e));
 }
