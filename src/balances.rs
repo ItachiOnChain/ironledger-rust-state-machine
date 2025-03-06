@@ -1,31 +1,30 @@
 use std::collections::BTreeMap; // we are using this rust collection to store balances, in real blockchain balances are stored in a database
-
-type AccountID = String;
-type Balance = u128;
-
+use num::traits::{CheckedAdd, CheckedSub, Zero};
 
 #[derive(Debug)]
 //Here we want to store balance of each user
-pub struct Pallet{
-    balances: BTreeMap<AccountID, Balance>,
-} 
+pub struct Pallet<AccountId, Balance> {
+ 	balances: BTreeMap<AccountId, Balance>,
+}
 
 
-impl Pallet {
+impl <AccountId, Balance> Pallet<AccountId, Balance> where
+	AccountId: Ord + Clone,
+	Balance: Zero + CheckedSub + CheckedAdd + Copy,{
 	/// Create a new instance of the balances module.
 	pub fn new() -> Self {
 		Self { balances: BTreeMap::new() }
 	}
 
 	/// Set the balance of an account `who` to some `amount`.
-	pub fn set_balance(&mut self, who: &AccountID, amount: Balance) {
+	pub fn set_balance(&mut self, who: &AccountId, amount: Balance) {
         self.balances.insert(who.clone(), amount);
 	}
 
 	/// Get the balance of an account `who`.
 	/// If the account has no stored balance, we return zero.
-	pub fn balance(&self, who: &AccountID) -> Balance {
-        *self.balances.get(who).unwrap_or(&0)
+	pub fn balance(&self, who: &AccountId) -> Balance {
+        *self.balances.get(who).unwrap_or(&Balance::zero())
 	}
 
     /// Transfer `amount` from one account to another.
@@ -33,17 +32,17 @@ impl Pallet {
 	/// and that no mathematical overflows occur.
 	pub fn transfer(
 		&mut self,
-		caller: AccountID,
-		to: AccountID,
+		caller: AccountId,
+		to: AccountId,
 		amount: Balance,
 	) -> Result<(), &'static str> {
         let caller_balance = self.balance(&caller);
         let to_balance = self.balance(&to);
 
-        let new_caller_balance = caller_balance.checked_sub(amount)
+        let new_caller_balance = caller_balance.checked_sub(&amount)
             .ok_or("Insufficient balance")?;
 
-        let new_to_balance = to_balance.checked_add(amount)
+        let new_to_balance = to_balance.checked_add(&amount)
             .ok_or("Overflow in transfer")?;
 
         self.set_balance(&caller, new_caller_balance);
