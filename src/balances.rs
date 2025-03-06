@@ -1,9 +1,13 @@
 use std::collections::BTreeMap; // we are using this rust collection to store balances, in real blockchain balances are stored in a database
 
+type AccountID = String;
+type Balance = u128;
+
+
 #[derive(Debug)]
 //Here we want to store balance of each user
 pub struct Pallet{
-    balances: BTreeMap<String, u128>,
+    balances: BTreeMap<AccountID, Balance>,
 } 
 
 
@@ -14,13 +18,13 @@ impl Pallet {
 	}
 
 	/// Set the balance of an account `who` to some `amount`.
-	pub fn set_balance(&mut self, who: &String, amount: u128) {
+	pub fn set_balance(&mut self, who: &AccountID, amount: Balance) {
         self.balances.insert(who.clone(), amount);
 	}
 
 	/// Get the balance of an account `who`.
 	/// If the account has no stored balance, we return zero.
-	pub fn balance(&self, who: &String) -> u128 {
+	pub fn balance(&self, who: &AccountID) -> Balance {
         *self.balances.get(who).unwrap_or(&0)
 	}
 
@@ -29,9 +33,9 @@ impl Pallet {
 	/// and that no mathematical overflows occur.
 	pub fn transfer(
 		&mut self,
-		caller: String,
-		to: String,
-		amount: u128,
+		caller: AccountID,
+		to: AccountID,
+		amount: Balance,
 	) -> Result<(), &'static str> {
         let caller_balance = self.balance(&caller);
         let to_balance = self.balance(&to);
