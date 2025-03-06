@@ -1,6 +1,8 @@
 mod balances;
 mod system;
 
+#[derive(Debug)]
+
 // This is our main Runtime.
 // It accumulates all of the different pallets we want to use.
 pub struct Runtime {
@@ -45,4 +47,6 @@ fn main() {
     // Second transaction
     let _ = runtime.balances.transfer(dayitva.clone(), aditya.clone(), 30)
     .map_err(|e| println!("Error: {:?}", e));
+
+    println!("{:?}", runtime);
 }

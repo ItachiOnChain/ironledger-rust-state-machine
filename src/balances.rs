@@ -1,5 +1,6 @@
 use std::collections::BTreeMap; // we are using this rust collection to store balances, in real blockchain balances are stored in a database
 
+#[derive(Debug)]
 //Here we want to store balance of each user
 pub struct Pallet{
     balances: BTreeMap<String, u128>,

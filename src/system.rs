@@ -1,4 +1,6 @@
 use std::collections::BTreeMap;
+
+#[derive(Debug)]
 /// This is the System Pallet.
 /// It handles low level state needed for your blockchain.
 pub struct Pallet {
