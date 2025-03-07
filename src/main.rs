@@ -14,13 +14,18 @@ impl system::Config for Runtime {
     type Nonce = types::Nonce;
 }
 
+impl balances::Config for Runtime {
+    type AccountId = types::AccountId;
+    type Balance = types::Balance;    
+}
+
 #[derive(Debug)]
 
 // This is our main Runtime.
 // It accumulates all of the different pallets we want to use.
 pub struct Runtime {
     system: system::Pallet<Runtime>,
-    balances: balances::Pallet<types::AccountId, types::Balance>,
+    balances: balances::Pallet<Runtime>,
 }
 
 impl Runtime {

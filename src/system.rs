@@ -1,5 +1,5 @@
 use std::{collections::BTreeMap, ops::AddAssign};
-use num::traits::{CheckedAdd, CheckedSub, Zero, One};
+use num::traits::{Zero, One};
 
 pub trait Config {
 	type AccountId: Ord + Clone;
