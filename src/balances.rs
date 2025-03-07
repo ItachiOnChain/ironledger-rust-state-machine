@@ -86,7 +86,7 @@ mod tests {
         let alice = "alice".to_string();
         let bob = "bob".to_string();
 
-        let mut balances = Pallet::new();
+        let mut balances = Pallet::<String, u128>::new();
 
         balances.set_balance(&alice.to_string(), 100);
         let result = balances.transfer(alice.clone(), bob.clone(), 110);
