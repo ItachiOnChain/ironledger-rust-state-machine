@@ -8,12 +8,18 @@ mod types{
     pub type Nonce = u32;
 }
 
+impl system::Config for Runtime {
+    type AccountId = types::AccountId;
+    type BlockNumber = types::BlockNumber; 
+    type Nonce = types::Nonce;
+}
+
 #[derive(Debug)]
 
 // This is our main Runtime.
 // It accumulates all of the different pallets we want to use.
 pub struct Runtime {
-    system: system::Pallet<types::AccountId, types::BlockNumber, types::Nonce>,
+    system: system::Pallet<Runtime>,
     balances: balances::Pallet<types::AccountId, types::Balance>,
 }
 
