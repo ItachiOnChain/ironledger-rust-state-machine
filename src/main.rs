@@ -108,25 +108,36 @@ fn main() {
     // Set initial balances
     runtime.balances.set_balance(&rajkumar, 100);
 
-    runtime.system.inc_block_number();
+    let block_1 = types::Block {
+	header: support::Header { block_number: 1 },
+	extrinsics: vec![
+		support::Extrinsic {
+			caller: rajkumar.clone(),
+			call: RuntimeCall::BalancesTransfer { to: dayitva.clone(), amount: 30 },
+		},
+        support::Extrinsic {
+			caller: rajkumar.clone(),
+			call: RuntimeCall::BalancesTransfer { to: aditya.clone(), amount: 20 },
+		},
+	],
+};
 
-    assert_eq!(runtime.system.block_number(), 1);
+let block_2 = types::Block {
+	header: support::Header { block_number: 2 },
+	extrinsics: vec![
+		support::Extrinsic {
+			caller: dayitva.clone(),
+			call: RuntimeCall::BalancesTransfer { to: rajkumar.clone(), amount: 30 },
+		},
+        support::Extrinsic {
+			caller: rajkumar,
+			call: RuntimeCall::BalancesTransfer { to: aditya, amount: 20 },
+		},
+	],
+};
 
-    runtime.system.inc_nonce(&rajkumar);
-
-    //First transaction
-    let _ = runtime
-        .balances
-        .transfer(rajkumar.clone(), dayitva.clone(), 50)
-        .map_err(|e| println!("Error: {:?}", e));
-
-    runtime.system.inc_nonce(&rajkumar);
-
-    // Second transaction
-    let _ = runtime
-        .balances
-        .transfer(dayitva.clone(), aditya.clone(), 30)
-        .map_err(|e| println!("Error: {:?}", e));
+    runtime.execute_block(block_1).expect("Block execution failed");
+    runtime.execute_block(block_2).expect("Block execution failed");
 
     println!("{:?}", runtime);
 }
