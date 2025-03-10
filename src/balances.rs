@@ -1,3 +1,4 @@
+use crate::support::Dispatch;
 use std::collections::BTreeMap; // we are using this rust collection to store balances, in real blockchain balances are stored in a database
 use num::traits::{CheckedAdd, CheckedSub, Zero};
 
@@ -56,9 +57,30 @@ impl <T:Config> Pallet<T> where
 	}
 }
 
+pub enum Call<T: Config> {
+	Transfer{
+        to: T::AccountId,
+        amount: T::Balance,
+    },
+}
+
+impl<T: Config> Dispatch for Pallet<T> {
+        type Caller = T::AccountId;
+        type Call = Call<T>;
+
+        fn dispatch(&mut self, caller: Self::Caller, call: Self::Call) -> crate::support::DispatchResult {
+            match call {
+                Call::Transfer { to, amount } => {
+                    self.transfer(caller, to, amount)?;
+                }
+            }
+            Ok(())
+        }
+    }
+
 #[cfg(test)]
 mod tests {
-    
+
     use crate::system;
     struct TestConfig;
 
