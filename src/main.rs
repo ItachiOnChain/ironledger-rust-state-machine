@@ -17,10 +17,7 @@ mod types {
 }
 
 pub enum RuntimeCall {
-    BalancesTransfer {
-        to: types::AccountId,
-        amount: types::Balance,
-    },
+    Balances(balances::Call<Runtime>),
 }
 
 impl system::Config for Runtime {
@@ -89,8 +86,8 @@ impl crate::support::Dispatch for Runtime {
         runtime_call: Self::Call,
     ) -> support::DispatchResult {
         match runtime_call {
-            RuntimeCall::BalancesTransfer { to, amount } => {
-                self.balances.transfer(caller, to, amount)?;
+            RuntimeCall::Balances(call) => {
+                self.balances.dispatch(caller, call)?;
             }
         }
         Ok(())
@@ -109,35 +106,51 @@ fn main() {
     runtime.balances.set_balance(&rajkumar, 100);
 
     let block_1 = types::Block {
-	header: support::Header { block_number: 1 },
-	extrinsics: vec![
-		support::Extrinsic {
-			caller: rajkumar.clone(),
-			call: RuntimeCall::BalancesTransfer { to: dayitva.clone(), amount: 30 },
-		},
-        support::Extrinsic {
-			caller: rajkumar.clone(),
-			call: RuntimeCall::BalancesTransfer { to: aditya.clone(), amount: 20 },
-		},
-	],
-};
+        header: support::Header { block_number: 1 },
+        extrinsics: vec![
+            support::Extrinsic {
+                caller: rajkumar.clone(),
+                call: RuntimeCall::Balances(balances::Call::Transfer {
+                    to: dayitva.clone(),
+                    amount: 30,
+                }),
+            },
+            support::Extrinsic {
+                caller: rajkumar.clone(),
+                call: RuntimeCall::Balances(balances::Call::Transfer {
+                    to: aditya.clone(),
+                    amount: 20,
+                }),
+            },
+        ],
+    };
 
-let block_2 = types::Block {
-	header: support::Header { block_number: 2 },
-	extrinsics: vec![
-		support::Extrinsic {
-			caller: dayitva.clone(),
-			call: RuntimeCall::BalancesTransfer { to: rajkumar.clone(), amount: 30 },
-		},
-        support::Extrinsic {
-			caller: rajkumar,
-			call: RuntimeCall::BalancesTransfer { to: aditya, amount: 20 },
-		},
-	],
-};
+    let block_2 = types::Block {
+        header: support::Header { block_number: 2 },
+        extrinsics: vec![
+            support::Extrinsic {
+                caller: dayitva.clone(),
+                call: RuntimeCall::Balances(balances::Call::Transfer {
+                    to: rajkumar.clone(),
+                    amount: 30,
+                }),
+            },
+            support::Extrinsic {
+                caller: rajkumar,
+                call: RuntimeCall::Balances(balances::Call::Transfer {
+                    to: aditya,
+                    amount: 20,
+                }),
+            },
+        ],
+    };
 
-    runtime.execute_block(block_1).expect("Block execution failed");
-    runtime.execute_block(block_2).expect("Block execution failed");
+    runtime
+        .execute_block(block_1)
+        .expect("Block execution failed");
+    runtime
+        .execute_block(block_2)
+        .expect("Block execution failed");
 
     println!("{:?}", runtime);
 }
