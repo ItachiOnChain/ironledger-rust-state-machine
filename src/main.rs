@@ -122,14 +122,14 @@ fn main() {
         extrinsics: vec![
             support::Extrinsic {
                 caller: rajkumar.clone(),
-                call: RuntimeCall::Balances(balances::Call::Transfer {
+                call: RuntimeCall::Balances(balances::Call::transfer {
                     to: dayitva.clone(),
                     amount: 30,
                 }),
             },
             support::Extrinsic {
                 caller: rajkumar.clone(),
-                call: RuntimeCall::Balances(balances::Call::Transfer {
+                call: RuntimeCall::Balances(balances::Call::transfer {
                     to: aditya.clone(),
                     amount: 20,
                 }),
