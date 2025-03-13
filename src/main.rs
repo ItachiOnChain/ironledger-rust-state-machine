@@ -142,13 +142,13 @@ fn main() {
         extrinsics: vec![
             support::Extrinsic {
                 caller: dayitva.clone(),
-                call: RuntimeCall::ProofOfExistence(proof_of_existence::Call::CreateClaim {
+                call: RuntimeCall::ProofOfExistence(proof_of_existence::Call::create_claim {
                     claim: "UNISWAP DOCS",
                 }),
             },
             support::Extrinsic {
                 caller: rajkumar,
-                call: RuntimeCall::ProofOfExistence(proof_of_existence::Call::CreateClaim {
+                call: RuntimeCall::ProofOfExistence(proof_of_existence::Call::create_claim {
                     claim: "UNISWAP V3 DOCS",
                 }),
             },
