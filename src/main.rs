@@ -1,9 +1,9 @@
 use crate::support::Dispatch;
 
 mod balances;
+mod proof_of_existence;
 mod support;
 mod system;
-mod proof_of_existence;
 
 mod types {
     use crate::support;
@@ -142,16 +142,14 @@ fn main() {
         extrinsics: vec![
             support::Extrinsic {
                 caller: dayitva.clone(),
-                call: RuntimeCall::Balances(balances::Call::Transfer {
-                    to: rajkumar.clone(),
-                    amount: 30,
+                call: RuntimeCall::ProofOfExistence(proof_of_existence::Call::CreateClaim {
+                    claim: "UNISWAP DOCS",
                 }),
             },
             support::Extrinsic {
                 caller: rajkumar,
-                call: RuntimeCall::Balances(balances::Call::Transfer {
-                    to: aditya,
-                    amount: 20,
+                call: RuntimeCall::ProofOfExistence(proof_of_existence::Call::CreateClaim {
+                    claim: "UNISWAP V3 DOCS",
                 }),
             },
         ],
